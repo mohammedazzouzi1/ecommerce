@@ -1,15 +1,14 @@
 import { ProductGrid } from "@/components/ProductGrid";
 import { IProduct } from "@/types";
-import { getBaseUrl } from "@/lib/utils";
 import Link from "next/link";
+import { connectDB } from "@/lib/mongodb";
+import Product from "@/models/Product";
 
 async function getProducts(): Promise<IProduct[]> {
   try {
-    const res = await fetch(`${getBaseUrl()}/api/products`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return [];
-    return res.json();
+    await connectDB();
+    const products = await Product.find({}).sort({ createdAt: -1 }).lean();
+    return JSON.parse(JSON.stringify(products));
   } catch {
     return [];
   }
