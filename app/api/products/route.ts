@@ -33,6 +33,12 @@ export async function GET() {
 async function saveBase64Image(base64Data: string): Promise<string> {
   // Check if it's a base64 data URL
   if (base64Data.startsWith("data:image")) {
+    // Vercel/serverless file system is read-only at runtime.
+    // Keep base64 as-is in production to avoid write failures.
+    if (process.env.NODE_ENV === "production") {
+      return base64Data;
+    }
+
     const matches = base64Data.match(/^data:image\/([a-zA-Z]+);base64,(.+)$/);
     if (!matches) {
       throw new Error("Invalid image format");
