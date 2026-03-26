@@ -6,8 +6,8 @@ import { FormEvent, useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("Azzouzi2024!");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -64,7 +64,7 @@ export default function LoginPage() {
                 <input
                   id="username"
                   type="text"
-                  placeholder="admin"
+                  placeholder="Enter username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
@@ -75,7 +75,7 @@ export default function LoginPage() {
                 <input
                   id="password"
                   type="password"
-                  placeholder="Azzouzi2024!"
+                  placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />

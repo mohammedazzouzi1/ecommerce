@@ -23,14 +23,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(httpsUrl);
   }
 
-  if (pathname.startsWith("/admin")) {
-    let target = "/dashboard-azzouzi-secure";
-    if (pathname === "/admin/new") target = "/dashboard-azzouzi-secure/products/new";
-    if (pathname.startsWith("/admin/edit/")) {
-      const id = pathname.split("/admin/edit/")[1];
-      target = `/dashboard-azzouzi-secure/products/${id}/edit`;
-    }
-    return NextResponse.redirect(new URL(target, request.url));
+  if (pathname.startsWith("/admin") || pathname.startsWith("/setup")) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
   
   // Check if route is protected
@@ -65,5 +59,6 @@ export const config = {
   matcher: [
     "/dashboard-azzouzi-secure/:path*",
     "/admin/:path*",
+    "/setup/:path*",
   ],
 };

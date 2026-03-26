@@ -111,9 +111,6 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
     if (!admin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    if (admin.role !== "superadmin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
 
     await connectDB();
     const product = await Product.findByIdAndDelete(params.id);

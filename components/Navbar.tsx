@@ -12,33 +12,10 @@ import { useCartStore } from "@/store/cartStore";
 export function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const totalItems = useCartStore((state) => state.totalItems);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function checkAdminAuth() {
-      try {
-        const res = await fetch("/api/auth/check", { cache: "no-store" });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (mounted) {
-          setIsAdminAuthenticated(Boolean(data?.authenticated));
-        }
-      } catch {
-        // Keep admin link hidden on fetch failure
-      }
-    }
-
-    checkAdminAuth();
-    return () => {
-      mounted = false;
-    };
   }, []);
 
   return (
@@ -64,14 +41,6 @@ export function Navbar() {
             >
               Shop
             </Link>
-            {isAdminAuthenticated ? (
-              <Link
-                href="/dashboard-azzouzi-secure"
-                className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
-              >
-                Admin
-              </Link>
-            ) : null}
           </div>
 
           {/* Cart Icon */}
@@ -147,15 +116,6 @@ export function Navbar() {
             >
               Shop
             </Link>
-            {isAdminAuthenticated ? (
-              <Link
-                href="/dashboard-azzouzi-secure"
-                className="block text-sm font-medium text-gray-700 hover:text-gray-900"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Admin
-              </Link>
-            ) : null}
           </div>
         )}
       </div>
