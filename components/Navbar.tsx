@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
 
@@ -19,6 +20,8 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const totalItems = useCartStore((state) => state.totalItems);
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
 
   useEffect(() => {
     setMounted(true);
@@ -27,11 +30,11 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isGlass = !scrolled && !mobileMenuOpen;
+  const isGlass = isHomePage && !scrolled && !mobileMenuOpen;
 
   return (
     <nav
-      className={`fixed top-0 z-50 w-full transition-all duration-500 ${isGlass
+      className={`${isHomePage ? "fixed" : "sticky"} top-0 z-50 w-full transition-all duration-500 ${isGlass
         ? "bg-white/10 backdrop-blur-md"
         : "bg-white/95 backdrop-blur-sm shadow-md"
         }`}
