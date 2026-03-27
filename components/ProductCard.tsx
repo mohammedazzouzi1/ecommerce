@@ -18,7 +18,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const hasOriginalPrice =
     typeof product.originalPrice === "number" && product.originalPrice > product.price;
-  const discountPct = hasOriginalPrice
+  const discountPct = hasOriginalPrice && product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
 
@@ -48,9 +48,8 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
 
         <p
-          className={`mt-1 text-lg font-bold ${
-            hasOriginalPrice ? "text-red-600" : "text-gray-900"
-          }`}
+          className={`mt-1 text-lg font-bold ${hasOriginalPrice ? "text-red-600" : "text-gray-900"
+            }`}
         >
           {formatPrice(product.price)}
         </p>

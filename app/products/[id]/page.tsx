@@ -90,7 +90,7 @@ export default function ProductDetailPage() {
 
   const hasOriginalPrice =
     typeof product.originalPrice === "number" && product.originalPrice > product.price;
-  const discountPct = hasOriginalPrice
+  const discountPct = hasOriginalPrice && product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
 
@@ -128,9 +128,8 @@ export default function ProductDetailPage() {
               <button
                 key={`${img}-${idx}`}
                 onClick={() => setSelectedImage(img)}
-                className={`relative aspect-square overflow-hidden rounded-lg border ${
-                  (selectedImage || product.image) === img ? "border-[#d4af37]" : "border-gray-200"
-                }`}
+                className={`relative aspect-square overflow-hidden rounded-lg border ${(selectedImage || product.image) === img ? "border-[#d4af37]" : "border-gray-200"
+                  }`}
               >
                 <Image src={img} alt={`${product.name} ${idx + 1}`} fill className="object-cover" sizes="120px" />
               </button>
@@ -160,9 +159,8 @@ export default function ProductDetailPage() {
           )}
 
           <p
-            className={`mt-2 text-2xl font-bold ${
-              hasOriginalPrice ? "text-red-600" : "text-gray-900"
-            }`}
+            className={`mt-2 text-2xl font-bold ${hasOriginalPrice ? "text-red-600" : "text-gray-900"
+              }`}
           >
             {formatPrice(product.price)}
           </p>
