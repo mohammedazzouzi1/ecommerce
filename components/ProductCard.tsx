@@ -16,6 +16,11 @@ interface ProductCardProps {
  */
 export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
+  const hasOriginalPrice =
+    typeof product.originalPrice === "number" && product.originalPrice > product.price;
+  const discountPct = hasOriginalPrice
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : 0;
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md">
@@ -36,9 +41,25 @@ export function ProductCard({ product }: ProductCardProps) {
           </h3>
         </Link>
 
-        <p className="mt-1 text-lg font-bold text-gray-900">
+        {hasOriginalPrice && (
+          <span className="mt-2 inline-flex w-fit items-center rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-600">
+            -{discountPct}%
+          </span>
+        )}
+
+        <p
+          className={`mt-1 text-lg font-bold ${
+            hasOriginalPrice ? "text-red-600" : "text-gray-900"
+          }`}
+        >
           {formatPrice(product.price)}
         </p>
+
+        {hasOriginalPrice && (
+          <p className="mt-1 text-sm font-medium text-gray-400 line-through">
+            {formatPrice(product.originalPrice as number)}
+          </p>
+        )}
 
         {product.category && (
           <span className="mt-1 inline-block text-xs text-gray-500 uppercase tracking-wide">

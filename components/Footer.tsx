@@ -11,10 +11,9 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {/* Brand */}
           <div>
-            <h3 className="text-lg font-bold text-gray-900">ShopMAD</h3>
+            <h3 className="text-lg font-bold text-gray-900">Elvaris Jewelry</h3>
             <p className="mt-2 text-sm text-gray-600">
-              Your one-stop shop for quality products. Fast delivery across
-              Morocco.
+              Moroccan jewelry crafted with elegance and modern luxury.
             </p>
           </div>
 
@@ -58,19 +57,28 @@ export function Footer() {
             </h3>
             <ul className="mt-4 space-y-2">
               <li className="text-sm text-gray-600">
-                WhatsApp: +212 600 000 000
+                WhatsApp: +{process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212673717955"}
               </li>
               <li className="text-sm text-gray-600">
-                Email: contact@shopmad.com
+                Instagram: @elvarisjewelry
               </li>
-              <li className="text-sm text-gray-600">Casablanca, Morocco</li>
+              <li>
+                <a
+                  href="https://www.instagram.com/elvarisjewelry?igsh=MWMwY3UybDk3MXA4Mw=="
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  Open Instagram Profile
+                </a>
+              </li>
             </ul>
           </div>
         </div>
 
         <div className="mt-8 border-t border-gray-200 pt-8 text-center">
           <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} ShopMAD. All rights reserved.
+            &copy; {new Date().getFullYear()} Elvaris Jewelry. All rights reserved.
           </p>
         </div>
       </div>

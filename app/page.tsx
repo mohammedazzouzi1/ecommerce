@@ -3,28 +3,37 @@ import { IProduct } from "@/types";
 import Link from "next/link";
 import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Product";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
-async function getProducts(): Promise<IProduct[]> {
+async function getProducts(category?: string): Promise<IProduct[]> {
   try {
     await connectDB();
-    const products = await Product.find({}).sort({ createdAt: -1 }).lean();
+    const filter = category ? { category } : {};
+    const products = await Product.find(filter).sort({ createdAt: -1 }).lean();
     return JSON.parse(JSON.stringify(products));
   } catch {
     return [];
   }
 }
 
-export default async function HomePage() {
-  const products = await getProducts();
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const categoryParam = searchParams.category;
+  const category = Array.isArray(categoryParam) ? categoryParam[0] : categoryParam;
+  const products = await getProducts(category);
 
   return (
     <div className="min-h-screen bg-[#f8f6f3]">
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460]" />
-        <div 
+
+        <div
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0L80 40L40 80L0 40L40 0z' fill='none' stroke='%23d4af37' stroke-width='1'/%3E%3Ccircle cx='40' cy='40' r='20' fill='none' stroke='%23d4af37' stroke-width='1'/%3E%3C/svg%3E")`,
@@ -33,20 +42,8 @@ export default async function HomePage() {
         />
         <div className="absolute top-20 left-10 w-64 h-64 bg-[#d4af37]/20 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#50c878]/10 rounded-full blur-3xl" />
-        <div className="absolute left-6 top-24 hidden lg:block w-44 h-56 rounded-2xl overflow-hidden shadow-2xl rotate-[-8deg]">
-          <img
-            src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=700&q=80"
-            alt="Luxury ring"
-            className="h-full w-full object-cover"
-          />
-        </div>
-        <div className="absolute right-8 bottom-24 hidden lg:block w-48 h-60 rounded-2xl overflow-hidden shadow-2xl rotate-[8deg]">
-          <img
-            src="https://images.unsplash.com/photo-1635767798638-3665c9c8f586?auto=format&fit=crop&w=700&q=80"
-            alt="Moroccan necklace"
-            className="h-full w-full object-cover"
-          />
-        </div>
+
+
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-block mb-6">
@@ -59,7 +56,7 @@ export default async function HomePage() {
             <span className="block text-[#d4af37]">aux Traditions</span>
           </h1>
           <p className="max-w-2xl mx-auto text-lg sm:text-xl text-gray-300 mb-10 leading-relaxed">
-            Découvrez notre collection exclusive de bijoux marocains, 
+            Découvrez notre collection exclusive de bijoux marocains,
             alliant l&apos;artisanat traditionnel et l&apos;élégance moderne.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -157,8 +154,16 @@ export default async function HomePage() {
           <div className="text-center mb-12">
             <span className="text-[#d4af37] text-sm tracking-[0.2em] uppercase">Instagram</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-[#1a1a2e] mt-2">
-              @azzouzi.jewelry
+              Elvaris Jewelry
             </h2>
+            <a
+              href="https://www.instagram.com/elvarisjewelry?igsh=MWMwY3UybDk3MXA4Mw=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-block text-sm font-medium text-[#1a1a2e] underline underline-offset-4 hover:text-[#d4af37]"
+            >
+              Follow on Instagram @elvarisjewelry
+            </a>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[

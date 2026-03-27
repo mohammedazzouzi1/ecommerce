@@ -3,6 +3,7 @@ export interface IProduct {
   _id: string;
   name: string;
   price: number;
+  originalPrice?: number;
   image: string;
   images?: string[];
   description: string;
@@ -25,7 +26,8 @@ export interface ProductFormProps {
 
 /** Props for the WhatsApp button */
 export interface WhatsAppButtonProps {
-  productName: string;
-  price: number;
-  quantity: number;
+  productName?: string;
+  price?: number;
+  quantity?: number;
+  customMessage?: string;
 }

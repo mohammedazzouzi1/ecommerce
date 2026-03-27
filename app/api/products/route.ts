@@ -91,6 +91,13 @@ export async function POST(request: NextRequest) {
     const description = sanitizeText(body?.description, 2000);
     const category = sanitizeText(body?.category, 80);
     const price = Number(body?.price);
+    const originalPriceRaw = body?.originalPrice;
+    const originalPrice =
+      originalPriceRaw === undefined ||
+      originalPriceRaw === null ||
+      originalPriceRaw === ""
+        ? undefined
+        : Number(originalPriceRaw);
     const stock = Number(body?.stock);
     const image = body?.image;
     const images = Array.isArray(body?.images) ? body.images : [];
@@ -107,6 +114,15 @@ export async function POST(request: NextRequest) {
         { error: "Price must be a positive number" },
         { status: 400 }
       );
+    }
+
+    if (originalPrice !== undefined) {
+      if (typeof originalPrice !== "number" || !Number.isFinite(originalPrice) || originalPrice < 0) {
+        return NextResponse.json(
+          { error: "Original price must be a positive number" },
+          { status: 400 }
+        );
+      }
     }
 
     if (!isValidImageInput(image)) {
@@ -130,6 +146,7 @@ export async function POST(request: NextRequest) {
       description,
       category,
       price,
+      originalPrice,
       stock: Number.isFinite(stock) ? Math.max(0, stock) : 100,
       image: imageUrl,
       images: gallery,

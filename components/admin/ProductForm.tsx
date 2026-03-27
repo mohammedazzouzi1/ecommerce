@@ -23,6 +23,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
     price: initialData?.price?.toString() || "",
+    originalPrice: initialData?.originalPrice?.toString() || "",
     image: initialData?.image || "",
     description: initialData?.description || "",
     category: initialData?.category || "",
@@ -31,7 +32,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
 
   /** Handles input field changes */
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -85,6 +86,18 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
       setError("Price must be a positive number");
       return false;
     }
+    if (formData.originalPrice && parseFloat(formData.originalPrice) < 0) {
+      setError("Original price must be a positive number");
+      return false;
+    }
+    if (formData.originalPrice) {
+      const p = parseFloat(formData.price);
+      const op = parseFloat(formData.originalPrice);
+      if (Number.isFinite(p) && Number.isFinite(op) && op <= p) {
+        setError("Original price must be higher than current price to show a discount.");
+        return false;
+      }
+    }
     if (!formData.image.trim() && !previewImage) {
       setError("Product image is required");
       return false;
@@ -107,7 +120,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
 
     try {
       let imageData = formData.image.trim();
-      
+
       // If a file was selected, convert it to base64
       const file = fileInputRef.current?.files?.[0];
       if (file) {
@@ -117,6 +130,9 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
       const body = {
         name: formData.name.trim(),
         price: parseFloat(formData.price),
+        originalPrice: formData.originalPrice.trim()
+          ? parseFloat(formData.originalPrice)
+          : undefined,
         image: imageData,
         description: formData.description.trim(),
         category: formData.category.trim(),
@@ -215,12 +231,33 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
         />
       </div>
 
+      {/* Original Price (optional) */}
+      <div>
+        <label
+          htmlFor="originalPrice"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Original Price (MAD) (optional)
+        </label>
+        <input
+          type="number"
+          id="originalPrice"
+          name="originalPrice"
+          value={formData.originalPrice}
+          onChange={handleChange}
+          min="0"
+          step="0.01"
+          className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 shadow-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
+          placeholder="e.g., 120.00"
+        />
+      </div>
+
       {/* Image Upload */}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Product Image *
         </label>
-        
+
         {/* Image Preview */}
         {previewImage && (
           <div className="mt-2 mb-4">
@@ -332,15 +369,22 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
         >
           Category
         </label>
-        <input
-          type="text"
+        <select
           id="category"
           name="category"
           value={formData.category}
           onChange={handleChange}
-          className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 shadow-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
-          placeholder="e.g., Electronics, Clothing"
-        />
+          className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 shadow-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black bg-white"
+        >
+          <option value="">Sélectionner une catégorie</option>
+          <option value="NOUVEAUTÉS">NOUVEAUTÉS</option>
+          <option value="BAGUES">BAGUES</option>
+          <option value="COLLIERS">COLLIERS</option>
+          <option value="BRACELETS">BRACELETS</option>
+          <option value="BOUCLES">BOUCLES</option>
+          <option value="PIERRES NATURELLES">PIERRES NATURELLES</option>
+          <option value="COLLECTIONS">COLLECTIONS</option>
+        </select>
       </div>
 
       {/* Stock */}

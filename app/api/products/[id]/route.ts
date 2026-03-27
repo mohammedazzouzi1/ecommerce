@@ -58,6 +58,26 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     };
 
     if (body?.price !== undefined) updatePayload.price = Number(body.price);
+    if (body?.originalPrice !== undefined) {
+      const originalPriceRaw = body.originalPrice;
+      if (originalPriceRaw === "" || originalPriceRaw === null) {
+        // Allow clearing the field
+        updatePayload.originalPrice = undefined;
+      } else {
+        const originalPrice = Number(originalPriceRaw);
+        if (
+          typeof originalPrice !== "number" ||
+          !Number.isFinite(originalPrice) ||
+          originalPrice < 0
+        ) {
+          return NextResponse.json(
+            { error: "Original price must be a positive number" },
+            { status: 400 }
+          );
+        }
+        updatePayload.originalPrice = originalPrice;
+      }
+    }
     if (body?.stock !== undefined) updatePayload.stock = Number(body.stock);
 
     if (body?.image && isValidImageInput(body.image)) {

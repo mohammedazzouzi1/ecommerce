@@ -88,6 +88,12 @@ export default function ProductDetailPage() {
     );
   }
 
+  const hasOriginalPrice =
+    typeof product.originalPrice === "number" && product.originalPrice > product.price;
+  const discountPct = hasOriginalPrice
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : 0;
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Breadcrumb */}
@@ -145,9 +151,27 @@ export default function ProductDetailPage() {
             {product.name}
           </h1>
 
-          <p className="mt-4 text-2xl font-bold text-green-600">
+          {hasOriginalPrice && (
+            <div className="mt-4">
+              <span className="inline-flex w-fit items-center rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-600">
+                -{discountPct}%
+              </span>
+            </div>
+          )}
+
+          <p
+            className={`mt-2 text-2xl font-bold ${
+              hasOriginalPrice ? "text-red-600" : "text-gray-900"
+            }`}
+          >
             {formatPrice(product.price)}
           </p>
+
+          {hasOriginalPrice && (
+            <p className="mt-1 text-sm font-medium text-gray-400 line-through">
+              {formatPrice(product.originalPrice as number)}
+            </p>
+          )}
 
           <p className="mt-4 text-gray-600 leading-relaxed">
             {product.description}

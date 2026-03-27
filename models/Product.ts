@@ -6,6 +6,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 export interface IProductDocument extends Document {
   name: string;
   price: number;
+  originalPrice?: number;
   image: string;
   images: string[];
   description: string;
@@ -25,6 +26,11 @@ const ProductSchema = new Schema<IProductDocument>(
       type: Number,
       required: [true, "Product price is required"],
       min: [0, "Price cannot be negative"],
+    },
+    originalPrice: {
+      type: Number,
+      default: undefined,
+      min: [0, "Original price cannot be negative"],
     },
     image: {
       type: String,
